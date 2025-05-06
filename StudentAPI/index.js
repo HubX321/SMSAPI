@@ -7,7 +7,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get('/',async (req,res)=>{
+app.get('/',async (req,res)=>{ 
     try {
         res.json('WELCOME TO STUDENT API');
     }
@@ -20,6 +20,18 @@ app.get('/',async (req,res)=>{
 app.get('/students',async(req,res)=>{
     try{
         const result = await pool.query('select * from student')
+        res.json(result.rows);
+    }catch(err){
+        res.status(500).json({Error:err.message});
+    }
+})
+
+
+
+
+app.get('/jobs',async(req,res)=>{
+    try{
+        const result = await pool.query('select * from jobs')
         res.json(result.rows);
     }catch(err){
         res.status(500).json({Error:err.message});
@@ -231,7 +243,7 @@ const result = await pool.query ('select employee_id from employees where depart
 })
 
 
-app.get('/job_history',async(req,res)=>{
+app.get('/history',async(req,res)=>{
     try{
 const result = await pool.query (`select e.first_name, e.last_name from employees e
      where (select count(*) from job_history j where j.employee_id = e.employee_id) > 1`)
@@ -368,7 +380,12 @@ join employees e on jh.employee_id = e.employee_id
 join departments d on jh.department_id = d.department_id
 join locations l on d.location_id = l.location_id
 join countries c on l.country_id = c.country_id;
-`)
+`) 
+  res.json(result.rows);
+}catch(err){
+    res.status(500).json({Error:err.message});
+}
+})
 
 
 
@@ -384,7 +401,39 @@ group by c.country_name, l.city, d.department_id
 having count(e.employee_id) >= 2;
  
 `);
+  res.json(result.rows);
+    }catch(err){
+        res.status(500).json({Error:err.message});
+    }
+})
 
+
+
+app.get('/count_departments',async(req,res)=>{
+    try{
+const result = await pool.query ('select count(*) from departments')
+        res.json(result.rows);
+    }catch(err){
+        res.status(500).json({Error:err.message});
+    }
+})
+
+  
+
+app.get('/count_regions',async(req,res)=>{
+    try{
+const result = await pool.query ('select count(*) from regions')
+        res.json(result.rows);
+    }catch(err){
+        res.status(500).json({Error:err.message});
+    }
+})     
+
+
+
+app.get('/count_employees',async(req,res)=>{
+    try{
+const result = await pool.query ('select count(*) from regions')
         res.json(result.rows);
     }catch(err){
         res.status(500).json({Error:err.message});
@@ -392,6 +441,33 @@ having count(e.employee_id) >= 2;
 })
 
 
+
+app.get('/count_job_history',async(req,res)=>{
+    try{
+const result = await pool.query ('select count(*) from departments')
+        res.json(result.rows);
+    }catch(err){
+        res.status(500).json({Error:err.message});
+    }
+})
+
+
+
+
+app.get('/count_countries',async(req,res)=>{
+    try{
+const result = await pool.query ('select count(*) from countries')
+        res.json(result.rows);
+    }catch(err){
+        res.status(500).json({Error:err.message});
+    }
+})
+
+
+
+app.get('/count_locations',async(req,res)=>{
+    try{
+const result = await pool.query ('select count(*) from locations')
         res.json(result.rows);
     }catch(err){
         res.status(500).json({Error:err.message});
